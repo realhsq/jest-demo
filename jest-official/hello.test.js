@@ -2,6 +2,6 @@ const hello = () => {
   return 'hello world';
 }
 
-it('should', () => {
+test('should', () => {
   expect(hello()).toBe('hello world');
 })
