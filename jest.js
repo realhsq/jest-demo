@@ -6,6 +6,7 @@
 const vm = require("vm");
 const path = require("path");
 const fs = require("fs");
+const assert = require("assert");
 
 
 // const testPath = process.argv.slice(2)[0];
@@ -77,20 +78,20 @@ createState();
 
 // const log = (color, text) => console.log(color, text);
 
-// const expect = (actual) => ({
-//     toBe(expected) {
-//         if (actual !== expected) {
-//             throw new Error(`${actual} is not equal to ${expected}`);
-//         }
-//     },
-//     toEqual(expected) {
-//         try {
-//             assert.deepStrictEqual(actual, expected);
-//         } catch {
-//             throw new Error(`${JSON.stringify(actual)} is not equal to ${JSON.stringify(expected)}`);
-//         }
-//     },
-// });
+const expect = (actual) => ({
+    toBe(expected) {
+        if (!Object.is(actual, expected)) {
+            throw new Error(`${actual} is not equal to ${expected}`);
+        }
+    },
+    toEqual(expected) {
+        try {
+            assert.deepStrictEqual(actual, expected);
+        } catch {
+            throw new Error(`${JSON.stringify(actual)} is not equal to ${JSON.stringify(expected)}`);
+        }
+    },
+});
 
 const context = {
     // console: console.Console({ stdout: process.stdout, stderr: process.stderr }),
@@ -140,8 +141,30 @@ const context = {
 // })();
 
 // test block
-context.test('test block', () => {
-    console.log('my test block');
-})
+// context.test('test block', () => {
+//     console.log('my test block');
+// })
   
+// global["STATE_SYMBOL"].testBlock[0].fn();
+
+// assertion and matcher
+context.test('assertion and matcher1', () => {
+    try {
+        expect({a: 1}).toBe({a: 1});
+        console.log('success');
+    } catch (e) {
+        console.log('failed');
+    }
+})
+
+context.test('assertion and matcher2', () => {
+    try {
+        expect({a: 1}).toEqual({a: 1});
+        console.log('success');
+    } catch (e) {
+        console.log('failed');
+    }
+})
+
 global["STATE_SYMBOL"].testBlock[0].fn();
+global["STATE_SYMBOL"].testBlock[1].fn();

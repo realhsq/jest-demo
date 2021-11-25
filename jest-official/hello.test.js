@@ -3,5 +3,5 @@ const hello = () => {
 }
 
 test('should', () => {
-  expect(hello()).toBe('hello world');
+  expect(hello()).toEqual('hello world');
 })
