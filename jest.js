@@ -9,8 +9,8 @@ const fs = require("fs");
 const assert = require("assert");
 
 
-const testPath = process.argv.slice(2)[0];
-const code = fs.readFileSync(path.join(process.cwd(), testPath)).toString();
+// const testPath = 'jest.test.js';
+// const code = fs.readFileSync(path.join(process.cwd(), testPath)).toString();
 
 const dispatch = event => {
     const { fn, type, name, pass } = event;
@@ -76,76 +76,77 @@ createState();
 //     }
 // };
 
-const log = (color, text) => console.log(color, text);
-
-const expect = (actual) => ({
-    toBe(expected) {
-        if (!Object.is(actual, expected)) {
-            throw new Error(`${actual} is not equal to ${expected}`);
-        }
-    },
-    toEqual(expected) {
-        try {
-            assert.deepStrictEqual(actual, expected);
-        } catch {
-            throw new Error(`${JSON.stringify(actual)} is not equal to ${JSON.stringify(expected)}`);
-        }
-    },
-});
+// const expect = (actual) => ({
+//     toBe(expected) {
+//         if (!Object.is(actual, expected)) {
+//             throw new Error(`${actual} is not equal to ${expected}`);
+//         }
+//     },
+//     toEqual(expected) {
+//         try {
+//             assert.deepStrictEqual(actual, expected);
+//         } catch {
+//             throw new Error(`${JSON.stringify(actual)} is not equal to ${JSON.stringify(expected)}`);
+//         }
+//     },
+// });
 
 const context = {
-    console: console.Console({ stdout: process.stdout, stderr: process.stderr }),
+    // console: console.Console({ stdout: process.stdout, stderr: process.stderr }),
     // jest,
-    expect,
-    require,
+    // expect,
+    // require,
     // afterAll: (fn) => dispatch({ type: "AFTER_ALL", fn }),
     // afterEach: (fn) => dispatch({ type: "AFTER_EACH", fn }),
     // beforeAll: (fn) => dispatch({ type: "BEFORE_ALL", fn }),
     // beforeEach: (fn) => dispatch({ type: "BEFORE_EACH", fn }),
-    test: (name, fn) => dispatch({ type: "ADD_TEST", fn, name }),
+    test: (name, fn) => dispatch({ type: "ADD_TEST", fn, name })
 };
 
-(async () => {
-    const start = new Date();
+// (async () => {
+//     const start = new Date();
 
-    vm.createContext(context);
-    vm.runInContext(code, context);
+//     // vm.createContext(context);
+//     // vm.runInContext(code, context);
 
-    const { testBlock, beforeEachBlock, beforeAllBlock, afterEachBlock, afterAllBlock } = global["STATE_SYMBOL"];
+//     const { testBlock, beforeEachBlock, beforeAllBlock, afterEachBlock, afterAllBlock } = global["STATE_SYMBOL"];
+//     // beforeAllBlock.forEach(async (beforeAll) => await beforeAll());
 
-    await new Promise((done) => {
-        // beforeAllBlock.forEach(async (beforeAll) => await beforeAll());
-        testBlock.forEach(async (item) => {
-            const { fn, name } = item;
-            try {
-                // beforeEachBlock.forEach(async (beforeEach) => await beforeEach());
-                await fn.apply(this);
-                // dispatch({ type: "COLLECT_REPORT", name, pass: 1 });
-                // afterEachBlock.forEach(async (afterEach) => await afterEach());
-                // log("\x1b[32m%s\x1b[0m", `√ ${name} passed`);
-            } catch (error) {
-                // dispatch({ type: "COLLECT_REPORT", name, pass: 0 });
-                console.error(error);
-                // log("\x1b[32m%s\x1b[0m", `× ${name} error`);z
-            }
-        });
-        // afterAllBlock.forEach(async (afterAll) => await afterAll());
-        done();
-    })
+//     await new Promise((resolve) => {
+//         testBlock.forEach(async (item) => {
+//             const { fn, name } = item;
+//             try {
+//                 // beforeEachBlock.forEach(async (beforeEach) => await beforeEach());
+//                 await fn.call();
+//                 // dispatch({ type: "COLLECT_REPORT", name, pass: 1 });
+//                 // afterEachBlock.forEach(async (afterEach) => await afterEach());
+//             } catch (error) {
+//                 // dispatch({ type: "COLLECT_REPORT", name, pass: 0 });
+//                 console.error("\x1B[37m", error);
+//             }
+//         });
+//         resolve();
+//     })
 
-    const end = new Date();
-    log("\x1b[32m%s\x1b[0m", `Time: ${end - start} ms`);
-    // const { reports } = global["STATE_SYMBOL"];
-    // const pass = reports.reduce((pre, next) => pre.pass + next.pass);
-    // log("\x1b[32m%s\x1b[0m", `All Tests: ${pass}/${reports.length} passed`);
-})();
+//     // afterAllBlock.forEach(async (afterAll) => await afterAll());
+//     // const end = new Date();
+//     // console.log("\x1b[32m%s\x1b[0m", `Time: ${end - start} ms`);
+//     // const { reports } = global["STATE_SYMBOL"];
+//     // reports.forEach((val) => {
+//     //     if (val.pass === 1) {
+//     //         console.log("\x1b[32m%s\x1b[0m", `√ ${val.name} passed`);
+//     //     } else {
+//     //         console.log("\x1b[91m", `× ${val.name} error`);
+//     //     }
+//     // })
+// })();
 
 // test block
-// context.test('test block', () => {
-//     console.log('my test block');
-// })
+context.test('test block', () => {
+    console.log('my test block');
+})
   
-// global["STATE_SYMBOL"].testBlock[0].fn();
+global["STATE_SYMBOL"].testBlock[0].fn();
 
 // assertion and matcher
 // context.test('assertion and matcher1', () => {
